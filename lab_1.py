@@ -10,14 +10,16 @@ import psycopg2.errorcodes
 import csv
 import datetime
 import itertools
+import config
 
 
 # підключення до бази даних
-conn = psycopg2.connect(dbname='postgres', user='postgres',
-                        password='postgres', host='localhost', port="5432")
+params = config.config()
 
-# conn = psycopg2.connect(dbname='postgres', user='postgres',
-#                         password='nadiya', host='localhost', port="5432")
+# connect to the PostgreSQL server
+print('Connecting to the PostgreSQL database...')
+conn = psycopg2.connect(**params)
+
 cursor = conn.cursor()
 # якщо таблиця існує - її необхідно видалити
 cursor.execute('DROP TABLE IF EXISTS tbl_open_data_zno;')
@@ -106,10 +108,7 @@ def insert_data(year, f, conn, cursor, time_f):
                 while not connection:
                     try:
                         # намагаємось підключитись до бази даних
-                        conn = psycopg2.connect(dbname='postgres', user='postgres',
-                                                password='postgres', host='localhost', port="5432")
-                        # conn = psycopg2.connect(dbname='postgres', user='postgres',
-                        #                         password='nadiya', host='localhost', port="5432")
+                        conn = psycopg2.connect(**params)
                         cursor = conn.cursor()
                         time_f.write(str(datetime.datetime.now()) + " - відновлення з'єднання з базою даних\n")
                         connection = True
